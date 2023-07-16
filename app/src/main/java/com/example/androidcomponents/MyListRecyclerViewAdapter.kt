@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.androidcomponents.databinding.FragmentElementBinding
+import com.example.androidcomponents.databinding.ListItemElementBinding
 import com.example.androidcomponents.placeholder.PlaceholderContent.PlaceholderItem
 
 
@@ -16,7 +16,7 @@ class MyListRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(
-            FragmentElementBinding.inflate(
+            ListItemElementBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -36,7 +36,7 @@ class MyListRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentElementBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: ListItemElementBinding) : RecyclerView.ViewHolder(binding.root) {
         val contentView: TextView = binding.content
 
         override fun toString(): String {

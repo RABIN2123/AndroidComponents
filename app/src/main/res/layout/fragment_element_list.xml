@@ -10,4 +10,4 @@
     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     app:spanCount="2"
     tools:context=".ElementListFragment"
-    tools:listitem="@layout/fragment_element" />
+    tools:listitem="@layout/list_item_element" />

@@ -20,27 +20,21 @@ class InfoElementFragment : Fragment() {
     private var prefs: SharedPreferences? = null
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            info = it.getStringArray(ARG_PARAM1)
-        }
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        prefs = context?.getSharedPreferences("savedId", Context.MODE_PRIVATE)
         binding = FragmentInfoElementBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        prefs = context?.getSharedPreferences("savedId", Context.MODE_PRIVATE)
+        arguments?.let {
+            info = it.getStringArray(ARG_PARAM1)
+        }
         prefs?.edit {
             putString("id", info?.get(0))
         }
