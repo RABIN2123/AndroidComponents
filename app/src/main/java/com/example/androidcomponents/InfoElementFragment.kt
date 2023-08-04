@@ -1,23 +1,28 @@
 package com.example.androidcomponents
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.example.androidcomponents.databinding.FragmentInfoElementBinding
+import com.example.androidcomponents.models.InfoElementModel
+import com.example.androidcomponents.placeholder.PlaceholderContent
+import com.example.androidcomponents.presenters.InfoElementPresenter
+import com.example.androidcomponents.presenters.interfaces.InfoElementView
 
 
 private const val ARG_PARAM1 = "info"
 
 
-class InfoElementFragment : Fragment() {
-    private var info: Array<String>? = null
+class InfoElementFragment : Fragment(), InfoElementView {
     private var binding: FragmentInfoElementBinding? = null
-    private var prefs: SharedPreferences? = null
+    private val presenter by lazy {
+        InfoElementPresenter(model)
+    }
+    private val model by lazy {
+        InfoElementModel(requireActivity().applicationContext)
+    }
 
 
     override fun onCreateView(
@@ -31,29 +36,35 @@ class InfoElementFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefs = context?.getSharedPreferences("savedId", Context.MODE_PRIVATE)
-        arguments?.let {
-            info = it.getStringArray(ARG_PARAM1)
-        }
-        prefs?.edit {
-            putString("id", info?.get(0))
-        }
-        binding?.apply {
-            idEditText.setText(info?.get(0))
-            nameEditText.setText(info?.get(1))
-            descriptionEditText.setText(info?.get(2))
-        }
+        presenter.attachView(this)
+        presenter.viewIsReady()
 
+    }
+
+    override fun showInfo(values: PlaceholderContent.PlaceholderItem) {
+        binding?.apply {
+            idEditText.setText(values.id)
+            nameEditText.setText(values.content)
+            descriptionEditText.setText(values.details)
+        }
+    }
+
+    override fun getIdInfo(): Int? {
+        return arguments?.getInt(ARG_PARAM1)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
 
     companion object {
         @JvmStatic
-        fun newInstance(id: String, content: String, details: String) =
+        fun newInstance(id: String) =
             InfoElementFragment().apply {
-                val info = arrayOf(id, content, details)
                 arguments = Bundle().apply {
-                    putStringArray(ARG_PARAM1, info)
+                    putInt(ARG_PARAM1, id.toInt())
                 }
             }
     }

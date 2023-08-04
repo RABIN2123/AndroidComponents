@@ -6,29 +6,45 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.androidcomponents.databinding.FragmentElementListBinding
+import com.example.androidcomponents.models.ElementListModel
 import com.example.androidcomponents.placeholder.PlaceholderContent
+import com.example.androidcomponents.presenters.ElementListPresenter
+import com.example.androidcomponents.presenters.interfaces.ElementListView
 
 /**
  * A fragment representing a list of Items.
  */
-class ElementListFragment() : Fragment() {
+class ElementListFragment() : Fragment(),
+    ElementListView<List<PlaceholderContent.PlaceholderItem>> {
+
 
     private val adapter by lazy {
         MyListRecyclerViewAdapter(
-            values = PlaceholderContent.ITEMS,
             onClickListener = fragment
         )
     }
+    private val presenter by lazy {
+        ElementListPresenter(model)
+    }
+    private val model by lazy {
+        ElementListModel()
+    }
+
     private var binding: FragmentElementListBinding? = null
-    private val fragment: (PlaceholderContent.PlaceholderItem) -> Unit = {item ->
+
+    private val fragment: (PlaceholderContent.PlaceholderItem) -> Unit = { item ->
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
         transaction.apply {
-            replace(R.id.fragment, InfoElementFragment.newInstance(item.id, item.content, item.details))
+            replace(
+                R.id.fragment,
+                InfoElementFragment.newInstance(item.id)
+            )
             addToBackStack(null)
             commit()
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,5 +60,17 @@ class ElementListFragment() : Fragment() {
 
     private fun initUi() {
         binding?.elementsList?.adapter = adapter
+        presenter.attachView(this)
+        presenter.viewIsReady()
+
+    }
+
+    override fun showInfo(values: List<PlaceholderContent.PlaceholderItem>) {
+        adapter.setData(values)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }

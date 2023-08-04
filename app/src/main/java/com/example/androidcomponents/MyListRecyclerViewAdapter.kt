@@ -9,9 +9,10 @@ import com.example.androidcomponents.placeholder.PlaceholderContent.PlaceholderI
 
 
 class MyListRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>,
     private val onClickListener: (PlaceholderItem) -> Unit
 ) : RecyclerView.Adapter<MyListRecyclerViewAdapter.ViewHolder>() {
+
+    private lateinit var values: List<PlaceholderItem>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -34,9 +35,14 @@ class MyListRecyclerViewAdapter(
 
     }
 
+    fun setData(values: List<PlaceholderItem>) {
+        this.values = values
+    }
+
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: ListItemElementBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: ListItemElementBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val contentView: TextView = binding.content
 
         override fun toString(): String {
