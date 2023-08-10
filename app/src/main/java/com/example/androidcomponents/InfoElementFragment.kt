@@ -5,25 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.androidcomponents.databinding.FragmentInfoElementBinding
-import com.example.androidcomponents.models.InfoElementModel
+import com.example.androidcomponents.interfaces.InfoViewModel
 import com.example.androidcomponents.placeholder.PlaceholderContent
-import com.example.androidcomponents.presenters.InfoElementPresenter
-import com.example.androidcomponents.presenters.interfaces.InfoElementView
+import kotlinx.coroutines.launch
 
 
-private const val ARG_PARAM1 = "info"
-
-
-class InfoElementFragment : Fragment(), InfoElementView {
+class InfoElementFragment : Fragment() {
+    private val viewModel: InfoViewModel by viewModels({ requireActivity() }) {
+        SharedViewModel.provideFactory(PlaceholderContent, requireActivity().applicationContext)
+    }
     private var binding: FragmentInfoElementBinding? = null
-    private val presenter by lazy {
-        InfoElementPresenter(model)
-    }
-    private val model by lazy {
-        InfoElementModel(requireActivity().applicationContext)
-    }
-
+    private var values: PlaceholderContent.PlaceholderItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,36 +31,24 @@ class InfoElementFragment : Fragment(), InfoElementView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.attachView(this)
-        presenter.viewIsReady()
+        showInfo()
 
     }
 
-    override fun showInfo(values: PlaceholderContent.PlaceholderItem) {
-        binding?.apply {
-            idEditText.setText(values.id)
-            nameEditText.setText(values.content)
-            descriptionEditText.setText(values.details)
-        }
-    }
-
-    override fun getIdInfo(): Int? {
-        return arguments?.getInt(ARG_PARAM1)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-    }
-
-
-    companion object {
-        @JvmStatic
-        fun newInstance(id: String) =
-            InfoElementFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_PARAM1, id.toInt())
-                }
+    private fun showInfo() {
+        viewModel.getInfo()
+        lifecycleScope.launch {
+            viewModel.listState.collect { items ->
+                values = items.info
             }
+        }
+        values?.let {
+            binding?.apply {
+                idEditText.setText(it.id)
+                nameEditText.setText(it.content)
+                descriptionEditText.setText(it.details)
+            }
+        }
+
     }
 }

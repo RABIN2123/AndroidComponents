@@ -9,7 +9,7 @@ import com.example.androidcomponents.placeholder.PlaceholderContent.PlaceholderI
 
 
 class MyListRecyclerViewAdapter(
-    private val onClickListener: (PlaceholderItem) -> Unit
+    private val onClickListener: (String) -> Unit
 ) : RecyclerView.Adapter<MyListRecyclerViewAdapter.ViewHolder>() {
 
     private lateinit var values: List<PlaceholderItem>
@@ -30,7 +30,7 @@ class MyListRecyclerViewAdapter(
         val item = values[position]
         holder.contentView.text = item.content
         holder.itemView.setOnClickListener {
-            onClickListener(item)
+            onClickListener(item.id)
         }
 
     }
