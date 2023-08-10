@@ -14,7 +14,7 @@ import com.example.androidcomponents.presenters.interfaces.ElementListView
 /**
  * A fragment representing a list of Items.
  */
-class ElementListFragment() : Fragment(),
+class ElementListFragment : Fragment(),
     ElementListView<List<PlaceholderContent.PlaceholderItem>> {
 
 
