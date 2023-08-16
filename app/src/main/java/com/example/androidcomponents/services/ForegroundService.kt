@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.example.androidcomponents.MainActivity
+import com.example.androidcomponents.Main.MainActivity
 import com.example.androidcomponents.R
 
 class ForegroundService : Service() {

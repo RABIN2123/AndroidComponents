@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class SharedViewModel(
     private val infoRepository: PlaceholderContent,
-    context: Context,
+    context: Context
 ) :
     ViewModel(), MainViewModel, ListViewModel, InfoViewModel {
     private val _listState = MutableStateFlow(ListState())
@@ -89,21 +89,5 @@ class SharedViewModel(
 
             }
         }
-    }
-}
-
-data class ListState(
-    override val list: MutableList<PlaceholderContent.PlaceholderItem> = ArrayList(),
-    override val info: PlaceholderContent.PlaceholderItem = PlaceholderContent.PlaceholderItem(
-        "",
-        "",
-        ""
-    ),
-    override val stateOfScreen: Status = Status.MAIN,
-    val id: Int = 0
-) : SupportMainViewModel, SupportListViewModel, SupportInfoViewModel {
-    enum class Status {
-        MAIN,
-        INFO
     }
 }

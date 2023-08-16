@@ -1,4 +1,4 @@
-package com.example.androidcomponents
+package com.example.androidcomponents.Main
 
 import android.Manifest
 import android.content.Intent
@@ -8,6 +8,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.commit
+import com.example.androidcomponents.ElementListFragment
+import com.example.androidcomponents.InfoElementFragment
+import com.example.androidcomponents.ListState
+import com.example.androidcomponents.R
+import com.example.androidcomponents.SharedViewModel
 import com.example.androidcomponents.interfaces.MainViewModel
 import com.example.androidcomponents.placeholder.PlaceholderContent
 import com.example.androidcomponents.services.ForegroundService
