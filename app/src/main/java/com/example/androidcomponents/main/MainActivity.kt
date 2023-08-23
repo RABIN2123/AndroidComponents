@@ -1,26 +1,31 @@
-package com.example.androidcomponents.Main
+package com.example.androidcomponents.main
 
 import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.commit
-import com.example.androidcomponents.ElementListFragment
-import com.example.androidcomponents.InfoElementFragment
-import com.example.androidcomponents.ListState
+import androidx.lifecycle.lifecycleScope
+import com.example.androidcomponents.list.ElementListFragment
+import com.example.androidcomponents.infoscreen.InfoElementFragment
 import com.example.androidcomponents.R
-import com.example.androidcomponents.SharedViewModel
-import com.example.androidcomponents.interfaces.MainViewModel
-import com.example.androidcomponents.placeholder.PlaceholderContent
 import com.example.androidcomponents.services.ForegroundService
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
 
-    private val sharedViewModel: MainViewModel by viewModels {
-        SharedViewModel.provideFactory(PlaceholderContent, applicationContext)
+    private val mainViewModel: MainViewModel by viewModels {
+        MainViewModel.provideFactory(
+            interactors = setOf(
+                CheckNotificationStateInteractor()
+            ),
+             applicationContext
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +38,15 @@ class MainActivity : AppCompatActivity() {
                 0
             )
         }
-        sharedViewModel.selectFragment(intent.getBooleanExtra("state", false))
-        when (sharedViewModel.listState.value.stateOfScreen) {
-            ListState.Status.MAIN -> startElementListFragment()
-            ListState.Status.INFO -> startInfoElementFragment()
-        }
+        mainViewModel.openFragment(intent.getBooleanExtra("state", false))
+        Log.d("TAG", "stateOfScreen = ${mainViewModel.listState.value.stateOfScreen}")
+        mainViewModel.listState.onEach {values ->
+            when (values.stateOfScreen) {
+                MainState.Status.MAIN -> startElementListFragment()
+                MainState.Status.INFO -> startInfoElementFragment()
+            }
+        }.launchIn(lifecycleScope)
+
     }
 
 
@@ -45,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             replace(
                 R.id.fragment,
-                InfoElementFragment()
+                InfoElementFragment(mainViewModel.listState.value.id)
             )
             setReorderingAllowed(true)
         }

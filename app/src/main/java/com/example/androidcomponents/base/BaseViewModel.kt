@@ -1,11 +1,9 @@
 package com.example.androidcomponents.base
 
-import android.content.Context
+import android.util.Log
 import androidx.annotation.MainThread
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.androidcomponents.ListState
 import com.example.androidcomponents.interfaces.Interactor
 import com.example.androidcomponents.interfaces.Reducer
 import com.example.androidcomponents.util.delegate
@@ -25,11 +23,14 @@ abstract class BaseViewModel<State, Action>(
 
     @MainThread
     protected fun action(action: Action) {
-        stateValue = reducer.reduce(stateValue, action)
+        val d = reducer.reduce(stateValue, action)
+        Log.d("TAG", "d = $d")
+        stateValue = d
         interactors.filter { it.canHandle(action) }.forEach { interactor ->
             viewModelScope.launch(Dispatchers.IO) {
                 val newResultAction = interactor.invoke(stateValue, action)
                 withContext(Dispatchers.Main) {
+                    Log.d("TAG","123 $newResultAction")
                     action(newResultAction)
                 }
             }

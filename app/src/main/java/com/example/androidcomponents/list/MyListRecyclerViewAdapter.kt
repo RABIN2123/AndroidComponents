@@ -1,4 +1,4 @@
-package com.example.androidcomponents
+package com.example.androidcomponents.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -37,6 +37,7 @@ class MyListRecyclerViewAdapter(
 
     fun setData(values: List<PlaceholderItem>) {
         this.values = values
+        notifyItemRangeChanged(0,19)
     }
 
     override fun getItemCount(): Int = values.size

@@ -1,17 +1,18 @@
-package com.example.androidcomponents.Main
+package com.example.androidcomponents.main
 
 import com.example.androidcomponents.Actions.MainAction
-import com.example.androidcomponents.ListState
 import com.example.androidcomponents.interfaces.Reducer
 
-class MainReducer: Reducer<ListState, MainAction> {
-    override val initialState = ListState()
+class MainReducer: Reducer<MainState, MainAction> {
+    override val initialState = MainState()
 
-    override fun reduce(state: ListState, action: MainAction): ListState {
+    override fun reduce(state: MainState, action: MainAction): MainState {
         return when(action) {
             is MainAction.CheckNotificationState -> state
             is MainAction.SelectFragment -> state.copy(
-                stateOfScreen = action.status
+                stateOfScreen = action.status,
+                id = action.id
+
             )
             is MainAction.Error -> state
         }

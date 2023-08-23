@@ -9,5 +9,6 @@
     android:layout_height="match_parent"
     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     app:spanCount="2"
-    tools:context=".ElementListFragment"
-    tools:listitem="@layout/list_item_element" />
+    tools:context=".list.ElementListFragment"
+    tools:listitem="@layout/list_item_element"
+    />
